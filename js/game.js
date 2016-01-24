@@ -378,20 +378,71 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+
+      var message = '';
+      var maxWidth = 240; //размер поле, где выводится текст
+      var lineHeight = 24; // 16 * 1.5
+      var marginLeft = 350;
+      var marginTop = 90;
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          message = 'Поздравляем, Вы выиграли! Нажмите пробел, чтобы сыграть снова.';
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          message = 'К сожалению, вы проиграли. Нажмите пробел для перезапуска игры.';
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          message = 'Игра остановлена. Нажмите пробел, чтобы возобновить игру.';
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          message = 'Я умею перемещаться и летать по нажатию стрелки. А если нажать Shift - я выстрелю фаерболом.';
           break;
       }
+
+      var drawRect = function(canvas, delta, color) {
+        canvas.beginPath();
+        canvas.moveTo(delta + 300, delta + 220);
+        canvas.lineTo(delta + 600, delta + 200);
+        canvas.lineTo(delta + 600, delta + 50);
+        canvas.lineTo(delta + 330, delta + 70);
+        canvas.lineTo(delta + 330, delta + 200);
+        canvas.lineTo(delta + 300, delta + 220);
+        canvas.closePath();
+
+        canvas.fillStyle = color;
+        canvas.fill();
+      }
+
+      drawRect(this.ctx, 10, 'rgba(0, 0, 0, 0.7)');
+      drawRect(this.ctx, 0, '#FFF');
+
+
+      function wrapText(context, text, maxWidth) {
+        var words = text.split(' ');
+        var countWords = words.length;
+        var line = '';
+
+        for (var n = 0; n < countWords; n++) {
+          var testLine = line + words[n] + ' ';
+          var testWidth = context.measureText(testLine).width;
+          if (testWidth > maxWidth) {
+            context.fillText(line, marginLeft, marginTop);
+            line = words[n] + ' ';
+            marginTop += lineHeight;
+          } else {
+            line = testLine;
+          }
+        }
+
+        context.fillText(line, marginLeft, marginTop);
+      }
+
+      this.ctx.fillStyle = '#000';
+      this.ctx.font = '16px PT Mono';
+
+      wrapText(this.ctx, message, maxWidth);
+
     },
 
     /**
