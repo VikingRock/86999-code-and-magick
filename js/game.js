@@ -380,10 +380,12 @@
     _drawPauseScreen: function() {
 
       var message = '';
-      var maxWidth = 240; //размер поле, где выводится текст
+      var maxWidth = 240; //message box width
       var lineHeight = 24; // 16 * 1.5
       var marginLeft = 350;
-      var marginTop = 90;
+      var marginBottom = 190;
+      var textLines = [];
+      var textLinesCount = 0;
 
       switch (this.state.currentStatus) {
         case Verdict.WIN:
@@ -400,25 +402,23 @@
           break;
       }
 
-      var drawRect = function(canvas, delta, color) {
-        canvas.beginPath();
-        canvas.moveTo(delta + 300, delta + 220);
-        canvas.lineTo(delta + 600, delta + 200);
-        canvas.lineTo(delta + 600, delta + 50);
-        canvas.lineTo(delta + 330, delta + 70);
-        canvas.lineTo(delta + 330, delta + 200);
-        canvas.lineTo(delta + 300, delta + 220);
-        canvas.closePath();
+      var drawMessageBox = function(context, delta, color, numLines) {
+        var totalHeight = numLines * lineHeight;
 
-        canvas.fillStyle = color;
-        canvas.fill();
+        context.beginPath();
+        context.moveTo(delta + 300, delta + 220);
+        context.lineTo(delta + 600, delta + 200);
+        context.lineTo(delta + 600, delta + 170 - totalHeight);
+        context.lineTo(delta + 330, delta + 190 - totalHeight);
+        context.lineTo(delta + 330, delta + 200);
+        context.lineTo(delta + 300, delta + 220);
+        context.closePath();
+
+        context.fillStyle = color;
+        context.fill();
       }
 
-      drawRect(this.ctx, 10, 'rgba(0, 0, 0, 0.7)');
-      drawRect(this.ctx, 0, '#FFF');
-
-
-      function wrapText(context, text, maxWidth) {
+      var countLines = function(context, text, maxWidth) {
         var words = text.split(' ');
         var countWords = words.length;
         var line = '';
@@ -427,21 +427,37 @@
           var testLine = line + words[n] + ' ';
           var testWidth = context.measureText(testLine).width;
           if (testWidth > maxWidth) {
-            context.fillText(line, marginLeft, marginTop);
+            textLines.push(line);
             line = words[n] + ' ';
-            marginTop += lineHeight;
           } else {
             line = testLine;
           }
         }
 
-        context.fillText(line, marginLeft, marginTop);
+        textLines.push(line);
+
+        return textLines;
       }
 
-      this.ctx.fillStyle = '#000';
+      var printLines = function(context, textLines, marginBottom) {
+        context.fillStyle = '#000';
+
+        for (var i = textLines.length - 1; i >= 0; i--) {
+          context.fillText(textLines[i], marginLeft, marginBottom);
+          marginBottom -= lineHeight;
+        }
+
+      }
+
       this.ctx.font = '16px PT Mono';
 
-      wrapText(this.ctx, message, maxWidth);
+      textLines = countLines(this.ctx, message, maxWidth);
+      textLinesCount = textLines.length;
+
+      drawMessageBox(this.ctx, 10, 'rgba(0, 0, 0, 0.7)', textLinesCount);
+      drawMessageBox(this.ctx, 0, '#FFF', textLinesCount);
+
+      printLines(this.ctx, textLines, marginBottom);
 
     },
 
