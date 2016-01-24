@@ -416,9 +416,9 @@
 
         context.fillStyle = color;
         context.fill();
-      }
+      };
 
-      var countLines = function(context, text, maxWidth) {
+      var countLines = function(context, text) {
         var words = text.split(' ');
         var countWords = words.length;
         var line = '';
@@ -437,21 +437,22 @@
         textLines.push(line);
 
         return textLines;
-      }
+      };
 
-      var printLines = function(context, textLines, marginBottom) {
+      var printLines = function(context, linesArr, margin) {
         context.fillStyle = '#000';
 
         for (var i = textLines.length - 1; i >= 0; i--) {
-          context.fillText(textLines[i], marginLeft, marginBottom);
-          marginBottom -= lineHeight;
+
+          context.fillText(linesArr[i], marginLeft, margin);
+          margin -= lineHeight;
         }
 
-      }
+      };
 
       this.ctx.font = '16px PT Mono';
 
-      textLines = countLines(this.ctx, message, maxWidth);
+      textLines = countLines(this.ctx, message);
       textLinesCount = textLines.length;
 
       drawMessageBox(this.ctx, 10, 'rgba(0, 0, 0, 0.7)', textLinesCount);
