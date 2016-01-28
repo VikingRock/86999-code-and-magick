@@ -18,13 +18,14 @@
   // makes Feedback required if Rate <=2
   // invokes checkRequired function
   function makeRequired() {
+
+    feedbackField.required = false;
+
     if ( rateFields[0].checked || rateFields[1].checked ) {
       feedbackField.required = true;
-    } else {
-      feedbackField.required = false;
     }
 
-    var boundCheck =  checkRequired.bind(feedbackField);
+    var boundCheck = checkRequired.bind(feedbackField);
     boundCheck();
   }
 
@@ -34,7 +35,7 @@
     var identifier = this.id;
     var targetLabel = document.querySelector('[for=' + identifier + '].review-fields-label');
 
-    if ( (this.required) && (this.value!='') || (!this.required)) {
+    if ( (this.required) && (this.value !== '') || (!this.required)) {
       targetLabel.classList.add('invisible');
     } else {
       targetLabel.classList.remove('invisible');
@@ -63,7 +64,7 @@
   for (var i = 0; i < rateFields.length; i++) {
     rateFields[i].onchange = function() {
       makeRequired();
-    }
+    };
   }
 
   nameField.oninput = checkRequired;
@@ -83,7 +84,7 @@
 
   nameField.required = true;
   submitForm.disabled = true;
-  reviewLabels[1].classList.add('invisible')
+  reviewLabels[1].classList.add('invisible');
 
 
 })();
