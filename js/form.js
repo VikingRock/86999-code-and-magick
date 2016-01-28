@@ -5,6 +5,7 @@
   var formOpenButton = document.querySelector('.reviews-controls-new');
   var formCloseButton = document.querySelector('.review-form-close');
 
+  var form = document.forms[1];
   var submitForm = document.querySelector('.review-submit');
   var reviewBlock = document.querySelector('.review-fields');
   var reviewLabels = document.querySelectorAll('.review-fields-label');
@@ -80,11 +81,28 @@
     formContainer.classList.add('invisible');
   };
 
+  form.onsubmit = function(event) {
+    event.preventDefault();
+
+    var currentRate = document.querySelector('input[name="review-mark"]:checked').value;
+    var myBDate = new Date('2015 10 26');
+    var now = new Date();
+    var cookieLife = new Date( now - myBDate + now.valueOf() ).toUTCString();
+
+    document.cookie = 'rate=' + currentRate + ';expires=' + cookieLife;
+    document.cookie = 'name=' + nameField.value + ';expires=' + cookieLife;
+
+    form.submit();
+  };
+
   //------------------- default settings -----------------
 
   nameField.required = true;
   submitForm.disabled = true;
   reviewLabels[1].classList.add('invisible');
 
+  nameField.value = docCookies.getItem('name');
+  var defaultRate = docCookies.getItem('rate');
+  document.getElementById('review-mark-' + defaultRate).checked = true;
 
 })();
