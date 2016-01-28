@@ -378,20 +378,88 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+
+      var message = '';
+      var maxWidth = 240; //message box width
+      var lineHeight = 24; // 16 * 1.5
+      var marginLeft = 350;
+      var marginBottom = 190;
+      var textLines = [];
+      var textLinesCount = 0;
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          message = 'Поздравляем, Вы выиграли! Нажмите пробел, чтобы сыграть снова.';
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          message = 'К сожалению, вы проиграли. Нажмите пробел для перезапуска игры.';
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          message = 'Игра остановлена. Нажмите пробел, чтобы возобновить игру.';
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          message = 'Я умею перемещаться и летать по нажатию стрелки. А если нажать Shift - я выстрелю фаерболом.';
           break;
       }
+
+      var drawMessageBox = function(context, delta, color, numLines) {
+        var totalHeight = numLines * lineHeight;
+
+        context.beginPath();
+        context.moveTo(delta + 300, delta + 220);
+        context.lineTo(delta + 600, delta + 200);
+        context.lineTo(delta + 600, delta + 170 - totalHeight);
+        context.lineTo(delta + 330, delta + 190 - totalHeight);
+        context.lineTo(delta + 330, delta + 200);
+        context.lineTo(delta + 300, delta + 220);
+        context.closePath();
+
+        context.fillStyle = color;
+        context.fill();
+      };
+
+      var countLines = function(context, text) {
+        var words = text.split(' ');
+        var countWords = words.length;
+        var line = '';
+
+        for (var n = 0; n < countWords; n++) {
+          var testLine = line + words[n] + ' ';
+          var testWidth = context.measureText(testLine).width;
+          if (testWidth > maxWidth) {
+            textLines.push(line);
+            line = words[n] + ' ';
+          } else {
+            line = testLine;
+          }
+        }
+
+        textLines.push(line);
+
+        return textLines;
+      };
+
+      var printLines = function(context, linesArr, margin) {
+        context.fillStyle = '#000';
+
+        for (var i = textLines.length - 1; i >= 0; i--) {
+
+          context.fillText(linesArr[i], marginLeft, margin);
+          margin -= lineHeight;
+        }
+
+      };
+
+      this.ctx.font = '16px PT Mono';
+
+      textLines = countLines(this.ctx, message);
+      textLinesCount = textLines.length;
+
+      drawMessageBox(this.ctx, 10, 'rgba(0, 0, 0, 0.7)', textLinesCount);
+      drawMessageBox(this.ctx, 0, '#FFF', textLinesCount);
+
+      printLines(this.ctx, textLines, marginBottom);
+
     },
 
     /**
