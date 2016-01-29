@@ -101,8 +101,8 @@
   reviewLabels[1].classList.add('invisible');
 
   if (document.cookie) {
-    nameField.value = docCookies.getItem('name');
-    var defaultRate = docCookies.getItem('rate');
+    nameField.value = window.docCookies.getItem('name');
+    var defaultRate = window.docCookies.getItem('rate');
 
     document.getElementById('review-mark-' + defaultRate).checked = true;
     reviewLabels[0].classList.add('invisible');
