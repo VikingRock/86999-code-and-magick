@@ -98,11 +98,17 @@
   //------------------- default settings -----------------
 
   nameField.required = true;
-  submitForm.disabled = true;
   reviewLabels[1].classList.add('invisible');
 
-  nameField.value = docCookies.getItem('name');
-  var defaultRate = docCookies.getItem('rate');
-  document.getElementById('review-mark-' + defaultRate).checked = true;
+  if (document.cookie) {
+    nameField.value = docCookies.getItem('name');
+    var defaultRate = docCookies.getItem('rate');
+
+    document.getElementById('review-mark-' + defaultRate).checked = true;
+    reviewLabels[0].classList.add('invisible');
+    reviewBlock.classList.add('invisible');
+  } else {
+    submitForm.disabled = true;
+  }
 
 })();
