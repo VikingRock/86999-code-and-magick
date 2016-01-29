@@ -36,7 +36,7 @@
     var identifier = this.id;
     var targetLabel = document.querySelector('[for=' + identifier + '].review-fields-label');
 
-    if ( (this.required) && (this.value !== '') || (!this.required)) {
+    if ( (this.required) && (this.value !== '') || (!this.required) ) {
       targetLabel.classList.add('invisible');
     } else {
       targetLabel.classList.remove('invisible');
@@ -107,6 +107,8 @@
     document.getElementById('review-mark-' + defaultRate).checked = true;
     reviewLabels[0].classList.add('invisible');
     reviewBlock.classList.add('invisible');
+    makeRequired();
+
   } else {
     submitForm.disabled = true;
   }
