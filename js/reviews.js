@@ -30,7 +30,7 @@
       element.insertBefore(ratingClone, element.querySelector('.review-rating'));
     }
 
-    var authorAvatar = new Image();
+    var authorAvatar = new Image(124, 124);
     var imageLoadTimeout;
     var IMAGE_TIMEOUT = 1000;
 
