@@ -85,8 +85,15 @@
     event.preventDefault();
 
     var currentRate = document.querySelector('input[name="review-mark"]:checked').value;
-    var myBDate = new Date('2015 10 26');
+    var myBDate = new Date('1988 10 26');
     var now = new Date();
+
+    if ( ( now.getMonth() === myBDate.getMonth() && now.getDate() >= myBDate.getDate() ) || now.getMonth() > myBDate.getMonth() ) {
+      myBDate.setFullYear(now.getFullYear());
+    } else {
+      myBDate.setFullYear(now.getFullYear() - 1);
+    }
+
     var cookieLife = new Date( now - myBDate + now.valueOf() ).toUTCString();
 
     document.cookie = 'rate=' + currentRate + ';expires=' + cookieLife;
