@@ -3,6 +3,7 @@
 (function() {
   var filterBlock = document.querySelector('.reviews-filter');
   var reviewsList = document.querySelector('.reviews-list');
+
   filterBlock.classList.add('invisible');
 
   window.reviews.forEach(function(testimonial) {
@@ -29,9 +30,25 @@
       element.insertBefore(ratingClone, element.querySelector('.review-rating'));
     }
 
-    var authorAvatar = new Image();  //124,124
+    var authorAvatar = new Image();
+    var imageLoadTimeout;
+    var IMAGE_TIMEOUT = 1000;
+
+    authorAvatar.onload = function() {
+      clearTimeout(imageLoadTimeout);
+      element.querySelector('.review-author').setAttribute('src', authorAvatar.src);
+    };
+
+    authorAvatar.onerror = function() {
+      element.classList.add('review-load-failure');
+    };
+
     authorAvatar.src = templateData.author.picture;
-    //element.querySelector('.review-author').setAttribute('src', templateData.author.picture);
+
+    imageLoadTimeout = setTimeout( function() {
+      element.querySelector('.review-author').setAttribute('src', '');
+      element.classList.add('review-load-failure');
+    }, IMAGE_TIMEOUT);
 
     return element;
   }
