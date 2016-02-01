@@ -5,6 +5,7 @@
   var formOpenButton = document.querySelector('.reviews-controls-new');
   var formCloseButton = document.querySelector('.review-form-close');
 
+  var form = document.forms[1];
   var submitForm = document.querySelector('.review-submit');
   var reviewBlock = document.querySelector('.review-fields');
   var reviewLabels = document.querySelectorAll('.review-fields-label');
@@ -35,7 +36,7 @@
     var identifier = this.id;
     var targetLabel = document.querySelector('[for=' + identifier + '].review-fields-label');
 
-    if ( (this.required) && (this.value !== '') || (!this.required)) {
+    if ( (this.required) && (this.value !== '') || (!this.required) ) {
       targetLabel.classList.add('invisible');
     } else {
       targetLabel.classList.remove('invisible');
@@ -80,11 +81,43 @@
     formContainer.classList.add('invisible');
   };
 
+  form.onsubmit = function(event) {
+    event.preventDefault();
+
+    var currentRate = document.querySelector('input[name="review-mark"]:checked').value;
+    var myBDate = new Date('1988 10 26');
+    var now = new Date();
+
+    if ( ( now.getMonth() === myBDate.getMonth() && now.getDate() >= myBDate.getDate() ) || now.getMonth() > myBDate.getMonth() ) {
+      myBDate.setFullYear(now.getFullYear());
+    } else {
+      myBDate.setFullYear(now.getFullYear() - 1);
+    }
+
+    var cookieLife = new Date( now - myBDate + now.valueOf() ).toUTCString();
+
+    document.cookie = 'rate=' + currentRate + ';expires=' + cookieLife;
+    document.cookie = 'name=' + nameField.value + ';expires=' + cookieLife;
+
+    form.submit();
+  };
+
   //------------------- default settings -----------------
 
   nameField.required = true;
-  submitForm.disabled = true;
   reviewLabels[1].classList.add('invisible');
 
+  if (document.cookie) {
+    nameField.value = window.docCookies.getItem('name');
+    var defaultRate = window.docCookies.getItem('rate');
+
+    document.getElementById('review-mark-' + defaultRate).checked = true;
+    reviewLabels[0].classList.add('invisible');
+    reviewBlock.classList.add('invisible');
+    makeRequired();
+
+  } else {
+    submitForm.disabled = true;
+  }
 
 })();
