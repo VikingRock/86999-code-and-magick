@@ -6,10 +6,29 @@
 
   filterBlock.classList.add('invisible');
 
-  window.reviews.forEach(function(testimonial) {
-    var element = getElementFromTemplate(testimonial);
-    reviewsList.appendChild(element);
-  });
+  getReviews();
+
+  function renderReviews(reviews) {
+    reviewsList.innerHTML = '';
+
+    reviews.forEach(function(testimonial) {
+      var element = getElementFromTemplate(testimonial);
+      reviewsList.appendChild(element);
+    });
+  }
+
+  function getReviews() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://o0.github.io/assets/json/reviews.json');
+
+    xhr.onload = function(evt) {
+      var stringData = evt.target.response;
+      var loadedReviews = JSON.parse(stringData);
+      renderReviews(loadedReviews);
+    }
+
+    xhr.send();
+  }
 
   function getElementFromTemplate(templateData) {
     var testimonialTemplate = document.getElementById('review-template');
