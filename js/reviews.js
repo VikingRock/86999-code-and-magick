@@ -3,6 +3,7 @@
 (function() {
   var filterBlock = document.querySelector('.reviews-filter');
   var reviewsList = document.querySelector('.reviews-list');
+  var reviewsBlock = document.querySelector('.reviews');
 
   filterBlock.classList.add('invisible');
 
@@ -20,11 +21,30 @@
   function getReviews() {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://o0.github.io/assets/json/reviews.json');
+    xhr.timeout = 10000;
 
     xhr.onload = function(evt) {
       var stringData = evt.target.response;
       var loadedReviews = JSON.parse(stringData);
+      reviewsBlock.classList.remove('reviews-list-loading');
       renderReviews(loadedReviews);
+    };
+
+    xhr.onloadstart = function() {
+      reviewsBlock.classList.add('reviews-list-loading');
+    };
+
+    xhr.ontimeout = function() {
+      addError();
+    };
+
+    xhr.onerror = function() {
+      addError();
+    };
+
+    function addError() {
+      reviewsBlock.classList.remove('reviews-list-loading');
+      reviewsBlock.classList.add('reviews-load-failure');
     }
 
     xhr.send();
