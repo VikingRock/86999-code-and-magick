@@ -4,20 +4,89 @@
   var filterBlock = document.querySelector('.reviews-filter');
   var reviewsList = document.querySelector('.reviews-list');
   var reviewsBlock = document.querySelector('.reviews');
+  var reviewFilters = document.querySelectorAll('[name=reviews]');
+  var activeFilter = 'reviews-all';
+  var reviews = [];
+  var RECENT_NUM_WEEKS = 2;
 
   filterBlock.classList.add('invisible');
 
-  getReviews();
-
-  function renderReviews(reviews) {
-    reviewsList.innerHTML = '';
-
-    reviews.forEach(function(testimonial) {
-      var element = getElementFromTemplate(testimonial);
-      reviewsList.appendChild(element);
-    });
+  //adding event handlers for filter radio buttons
+  for (var i = 0; i < reviewFilters.length; i++) {
+    reviewFilters[i].onclick = function(evt) {
+      var clickedElementID = evt.target.id;
+      seActiveFilter(clickedElementID);
+    };
   }
 
+  getReviews();
+
+  //rendering a new DOM element created in getElementFromTemplate()
+  function renderReviews(items) {
+    reviewsList.innerHTML = '';
+    var fragment = document.createDocumentFragment();
+
+    items.forEach(function(testimonial) {
+      var element = getElementFromTemplate(testimonial);
+      fragment.appendChild(element);
+    });
+
+    reviewsList.appendChild(fragment);
+  }
+
+  //set and apply filter to reviews
+  function seActiveFilter(id) {
+
+    if (activeFilter === id) {
+      return;
+    }
+
+    var filteredReviews = reviews.slice(0);
+
+    switch (id) {
+      case 'reviews-recent':
+        filteredReviews = filteredReviews.filter(function(item) {
+          var now = new Date();
+          var reviewDate = new Date(item.date);
+          return (now - reviewDate) < (RECENT_NUM_WEEKS * 7 * 24 * 60 * 60 * 1000);
+        });
+        filteredReviews.sort(function(a, b) {
+          var leftDate = new Date(a.date);
+          var rightDate = new Date(b.date);
+          return rightDate - leftDate;
+        });
+        break;
+
+      case 'reviews-good':
+        filteredReviews = filteredReviews.filter(function(item) {
+          return item.rating >= 3;
+        });
+        filteredReviews.sort(function(a, b) {
+          return b.rating - a.rating;
+        });
+        break;
+
+      case 'reviews-bad':
+        filteredReviews = filteredReviews.filter(function(item) {
+          return item.rating <= 2;
+        });
+        filteredReviews.sort(function(a, b) {
+          return a.rating - b.rating;
+        });
+        break;
+
+      case 'reviews-popular':
+        filteredReviews.sort(function(a, b) {
+          return b.review_usefulness - a.review_usefulness;
+        });
+        break;
+    }
+
+    activeFilter = id;
+    renderReviews(filteredReviews);
+  }
+
+  //load review list by XHR
   function getReviews() {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'http://o0.github.io/assets/json/reviews.json');
@@ -25,9 +94,9 @@
 
     xhr.onload = function(evt) {
       var stringData = evt.target.response;
-      var loadedReviews = JSON.parse(stringData);
+      reviews = JSON.parse(stringData);
       reviewsBlock.classList.remove('reviews-list-loading');
-      renderReviews(loadedReviews);
+      renderReviews(reviews);
     };
 
     xhr.onloadstart = function() {
@@ -50,6 +119,7 @@
     xhr.send();
   }
 
+  //create a new DOM element - review - from template and return this element
   function getElementFromTemplate(templateData) {
     var testimonialTemplate = document.getElementById('review-template');
     var element;
@@ -64,7 +134,7 @@
     element.querySelector('.review-author').setAttribute('alt', templateData.author.name);
     element.querySelector('.review-author').setAttribute('title', templateData.author.name);
 
-    for (var i = 0; i < templateData.rating - 1; i++) {
+    for (i = 0; i < templateData.rating - 1; i++) {
       var ratingClone = element.querySelector('.review-rating').cloneNode();
       element.insertBefore(ratingClone, element.querySelector('.review-rating'));
     }
