@@ -5,6 +5,7 @@
   var reviewsList = document.querySelector('.reviews-list');
   var reviewsBlock = document.querySelector('.reviews');
   var activeFilter = 'reviews-all';
+  var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
   var currentPage = 0;
   var reviews = [];
   var RECENT_NUM_WEEKS = 2;
@@ -35,6 +36,12 @@
     var from = pageNumber * PAGE_SIZE;
     var to = from + PAGE_SIZE;
     var pageReviews = items.slice(from, to);
+
+    if (items[to + 1]) {
+      showMoreReviewsBtn.classList.remove('invisible');
+    } else {
+      showMoreReviewsBtn.classList.add('invisible');
+    }
 
     pageReviews.forEach(function(testimonial) {
       var element = getElementFromTemplate(testimonial);
