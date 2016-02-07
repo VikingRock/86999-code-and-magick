@@ -4,29 +4,39 @@
   var filterBlock = document.querySelector('.reviews-filter');
   var reviewsList = document.querySelector('.reviews-list');
   var reviewsBlock = document.querySelector('.reviews');
-  var reviewFilters = document.querySelectorAll('[name=reviews]');
   var activeFilter = 'reviews-all';
+  var currentPage = 0;
   var reviews = [];
   var RECENT_NUM_WEEKS = 2;
+  var PAGE_SIZE = 3;
 
   filterBlock.classList.add('invisible');
 
-  //adding event handlers for filter radio buttons
-  for (var i = 0; i < reviewFilters.length; i++) {
-    reviewFilters[i].onclick = function(evt) {
-      var clickedElementID = evt.target.id;
-      seActiveFilter(clickedElementID);
-    };
+  //adding event handler for filter radio buttons
+  filterBlock.addEventListener('click', filterHandler);
+
+  function filterHandler(evt) {
+    var target = evt.target;
+
+    if ( !(target.tagName === 'INPUT')) {
+      return;
+    }
+
+    setActiveFilter(target.id);
   }
 
   getReviews();
 
   //rendering a new DOM element created in getElementFromTemplate()
-  function renderReviews(items) {
+  function renderReviews(items, pageNumber) {
     reviewsList.innerHTML = '';
     var fragment = document.createDocumentFragment();
 
-    items.forEach(function(testimonial) {
+    var from = pageNumber * PAGE_SIZE;
+    var to = from + PAGE_SIZE;
+    var pageReviews = items.slice(from, to);
+
+    pageReviews.forEach(function(testimonial) {
       var element = getElementFromTemplate(testimonial);
       fragment.appendChild(element);
     });
@@ -35,7 +45,7 @@
   }
 
   //set and apply filter to reviews
-  function seActiveFilter(id) {
+  function setActiveFilter(id) {
 
     if (activeFilter === id) {
       return;
@@ -83,7 +93,7 @@
     }
 
     activeFilter = id;
-    renderReviews(filteredReviews);
+    renderReviews(filteredReviews, 0);
   }
 
   //load review list by XHR
@@ -96,7 +106,7 @@
       var stringData = evt.target.response;
       reviews = JSON.parse(stringData);
       reviewsBlock.classList.remove('reviews-list-loading');
-      renderReviews(reviews);
+      renderReviews(reviews, 0);
     };
 
     xhr.onloadstart = function() {
@@ -134,7 +144,7 @@
     element.querySelector('.review-author').setAttribute('alt', templateData.author.name);
     element.querySelector('.review-author').setAttribute('title', templateData.author.name);
 
-    for (i = 0; i < templateData.rating - 1; i++) {
+    for (var i = 0; i < templateData.rating - 1; i++) {
       var ratingClone = element.querySelector('.review-rating').cloneNode();
       element.insertBefore(ratingClone, element.querySelector('.review-rating'));
     }
