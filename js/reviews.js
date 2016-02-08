@@ -15,7 +15,7 @@
   for (var i = 0; i < reviewFilters.length; i++) {
     reviewFilters[i].onclick = function(evt) {
       var clickedElementID = evt.target.id;
-      seActiveFilter(clickedElementID);
+      setActiveFilter(clickedElementID);
     };
   }
 
@@ -35,7 +35,7 @@
   }
 
   //set and apply filter to reviews
-  function seActiveFilter(id) {
+  function setActiveFilter(id) {
 
     if (activeFilter === id) {
       return;
