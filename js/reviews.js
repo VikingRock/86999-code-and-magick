@@ -8,6 +8,7 @@
   var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
   var currentPage = 0;
   var reviews = [];
+  var filteredReviews = [];
   var RECENT_NUM_WEEKS = 2;
   var PAGE_SIZE = 3;
 
@@ -16,10 +17,12 @@
   //adding event handler for filter radio buttons
   filterBlock.addEventListener('click', filterHandler);
 
+  //button click handler for showing another page
   showMoreReviewsBtn.addEventListener('click', function() {
-    renderReviews(reviews, currentPage);
+    renderReviews(filteredReviews, currentPage);
   });
 
+  //delegating radio button click event
   function filterHandler(evt) {
     var target = evt.target;
 
@@ -30,41 +33,6 @@
     setActiveFilter(target.id);
   }
 
-  getReviews();
-
-  //rendering a new DOM element created in getElementFromTemplate()
-  function renderReviews(items, pageNumber) {
-    var fragment = document.createDocumentFragment();
-
-    var from = pageNumber * PAGE_SIZE;
-    var to = from + PAGE_SIZE;
-    var pageReviews;
-
-    if (to < items.length) {
-      pageReviews = items.slice(from, to);
-    } else {
-      pageReviews = items.slice(from);
-    }
-
-    if (pageNumber === 0) {
-      reviewsList.innerHTML = '';
-    }
-
-    if (items[to + 1]) {
-      showMoreReviewsBtn.classList.remove('invisible');
-      currentPage += 1;
-    } else {
-      showMoreReviewsBtn.classList.add('invisible');
-    }
-
-    pageReviews.forEach(function(testimonial) {
-      var element = getElementFromTemplate(testimonial);
-      fragment.appendChild(element);
-    });
-
-    reviewsList.appendChild(fragment);
-  }
-
   //set and apply filter to reviews
   function setActiveFilter(id) {
 
@@ -72,7 +40,7 @@
       return;
     }
 
-    var filteredReviews = reviews.slice(0);
+    filteredReviews = reviews.slice(0);
 
     switch (id) {
       case 'reviews-recent':
@@ -113,8 +81,42 @@
         break;
     }
 
+    currentPage = 0;  //when filter changes, show array from page = 0
     activeFilter = id;
-    renderReviews(filteredReviews, 0);
+    renderReviews(filteredReviews, currentPage);
+  }
+
+  //rendering a new DOM element created in getElementFromTemplate()
+  function renderReviews(items, pageNumber) {
+    var fragment = document.createDocumentFragment();
+
+    var from = pageNumber * PAGE_SIZE;
+    var to = from + PAGE_SIZE;
+    var pageReviews;
+
+    if (to < items.length) {
+      pageReviews = items.slice(from, to);
+    } else {
+      pageReviews = items.slice(from);
+    }
+
+    if (pageNumber === 0) {
+      reviewsList.innerHTML = '';
+    }
+
+    if (items[to]) {
+      showMoreReviewsBtn.classList.remove('invisible');
+      currentPage++;
+    } else {
+      showMoreReviewsBtn.classList.add('invisible');
+    }
+
+    pageReviews.forEach(function(testimonial) {
+      var element = getElementFromTemplate(testimonial);
+      fragment.appendChild(element);
+    });
+
+    reviewsList.appendChild(fragment);
   }
 
   //load review list by XHR
@@ -192,6 +194,8 @@
 
     return element;
   }
+
+  getReviews();
 
   filterBlock.classList.remove('invisible');
 
