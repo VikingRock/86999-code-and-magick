@@ -16,6 +16,10 @@
   //adding event handler for filter radio buttons
   filterBlock.addEventListener('click', filterHandler);
 
+  showMoreReviewsBtn.addEventListener('click', function() {
+    renderReviews(reviews, currentPage);
+  });
+
   function filterHandler(evt) {
     var target = evt.target;
 
@@ -30,15 +34,25 @@
 
   //rendering a new DOM element created in getElementFromTemplate()
   function renderReviews(items, pageNumber) {
-    reviewsList.innerHTML = '';
     var fragment = document.createDocumentFragment();
 
     var from = pageNumber * PAGE_SIZE;
     var to = from + PAGE_SIZE;
-    var pageReviews = items.slice(from, to);
+    var pageReviews;
+
+    if (to < items.length) {
+      pageReviews = items.slice(from, to);
+    } else {
+      pageReviews = items.slice(from);
+    }
+
+    if (pageNumber === 0) {
+      reviewsList.innerHTML = '';
+    }
 
     if (items[to + 1]) {
       showMoreReviewsBtn.classList.remove('invisible');
+      currentPage += 1;
     } else {
       showMoreReviewsBtn.classList.add('invisible');
     }
