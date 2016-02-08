@@ -746,6 +746,14 @@
     }
   };
 
+  window.addEventListener('scroll', scrollParallax);
+  var clouds = document.querySelector('.header-clouds');
+  clouds.style.backgroundPosition = '0px';
+
+  function scrollParallax(evt) {
+    clouds.style.backgroundPosition -= 10 + 'px';
+  }
+
   window.Game = Game;
   window.Game.Verdict = Verdict;
 
