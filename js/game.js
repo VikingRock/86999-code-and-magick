@@ -746,12 +746,15 @@
     }
   };
 
+  /**
+   * Adding scroll event to make a cloud parallax effect
+   */
   window.addEventListener('scroll', scrollParallax);
+
   var clouds = document.querySelector('.header-clouds');
-  clouds.style.backgroundPosition = '0px';
 
   function scrollParallax(evt) {
-    clouds.style.backgroundPosition -= 10 + 'px';
+    clouds.style.backgroundPosition = 50 - window.pageYOffset + '% 50%';
   }
 
   window.Game = Game;
