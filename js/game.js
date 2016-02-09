@@ -752,9 +752,22 @@
   window.addEventListener('scroll', scrollParallax);
 
   var clouds = document.querySelector('.header-clouds');
+  var scrollTimeout;
+  var allowParallax = true;
 
-  function scrollParallax(evt) {
-    clouds.style.backgroundPosition = 50 - window.pageYOffset + '% 50%';
+  function scrollParallax() {
+    var cloudCoordinates = clouds.getBoundingClientRect();
+
+    if (allowParallax) {
+      clouds.style.backgroundPosition = 50 - window.pageYOffset + '% 50%';
+    }
+
+    clearTimeout(scrollTimeout);
+
+    scrollTimeout = setTimeout( function() {
+      cloudCoordinates.bottom < 0 ? allowParallax = false : allowParallax = true;
+    }, 100);
+
   }
 
   window.Game = Game;
