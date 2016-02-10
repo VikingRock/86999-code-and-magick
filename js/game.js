@@ -752,11 +752,13 @@
   window.addEventListener('scroll', scrollParallax);
 
   var clouds = document.querySelector('.header-clouds');
+  var gameDiv = document.querySelector('.demo');
   var scrollTimeout;
   var allowParallax = true;
 
   function scrollParallax() {
     var cloudCoordinates = clouds.getBoundingClientRect();
+    var gameCoordinates = gameDiv.getBoundingClientRect();
 
     if (allowParallax) {
       clouds.style.backgroundPosition = 50 - window.pageYOffset + '% 50%';
@@ -765,7 +767,10 @@
     clearTimeout(scrollTimeout);
 
     scrollTimeout = setTimeout( function() {
-      cloudCoordinates.bottom < 0 ? allowParallax = false : allowParallax = true;
+      cloudCoordinates.bottom < 0 ? allowParallax = false : allowParallax = true; // manage Cloud parallax
+
+      gameCoordinates.bottom < 0 ? game.setGameStatus(window.Game.Verdict.PAUSE) : false; // pause game if not visible
+
     }, 100);
 
   }
