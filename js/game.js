@@ -769,13 +769,13 @@
     scrollTimeout = setTimeout( function() {
 
       if (cloudCoordinates.bottom < 0) {
-        allowParallax = false
+        allowParallax = false;
       } else {
         allowParallax = true;
       }
 
       if (gameCoordinates.bottom < 0) {
-        game.setGameStatus(window.Game.Verdict.PAUSE)
+        game.setGameStatus(window.Game.Verdict.PAUSE);
       }
 
     }, 100);
