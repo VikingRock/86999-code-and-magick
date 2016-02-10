@@ -767,9 +767,16 @@
     clearTimeout(scrollTimeout);
 
     scrollTimeout = setTimeout( function() {
-      cloudCoordinates.bottom < 0 ? allowParallax = false : allowParallax = true; // manage Cloud parallax
 
-      gameCoordinates.bottom < 0 ? game.setGameStatus(window.Game.Verdict.PAUSE) : false; // pause game if not visible
+      if (cloudCoordinates.bottom < 0) {
+        allowParallax = false
+      } else {
+        allowParallax = true;
+      }
+
+      if (gameCoordinates.bottom < 0) {
+        game.setGameStatus(window.Game.Verdict.PAUSE)
+      }
 
     }, 100);
 
