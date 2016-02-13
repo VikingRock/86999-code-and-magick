@@ -746,6 +746,42 @@
     }
   };
 
+  /**
+   * Adding scroll event to make a cloud parallax effect
+   */
+  window.addEventListener('scroll', scrollParallax);
+
+  var clouds = document.querySelector('.header-clouds');
+  var gameDiv = document.querySelector('.demo');
+  var scrollTimeout;
+  var allowParallax = true;
+
+  function scrollParallax() {
+    var cloudCoordinates = clouds.getBoundingClientRect();
+    var gameCoordinates = gameDiv.getBoundingClientRect();
+
+    if (allowParallax) {
+      clouds.style.backgroundPosition = 50 - window.pageYOffset + '% 50%';
+    }
+
+    clearTimeout(scrollTimeout);
+
+    scrollTimeout = setTimeout( function() {
+
+      if (cloudCoordinates.bottom < 0) {
+        allowParallax = false;
+      } else {
+        allowParallax = true;
+      }
+
+      if (gameCoordinates.bottom < 0) {
+        game.setGameStatus(window.Game.Verdict.PAUSE);
+      }
+
+    }, 100);
+
+  }
+
   window.Game = Game;
   window.Game.Verdict = Verdict;
 
