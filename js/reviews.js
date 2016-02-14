@@ -6,6 +6,7 @@
   var filterBlock = document.querySelector('.reviews-filter');
   var reviewsList = document.querySelector('.reviews-list');
   var reviewsBlock = document.querySelector('.reviews');
+  var imagesBlock = document.querySelector('.main-section.photogallery');
   var activeFilter = 'reviews-all';
   var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
   var currentPage = 0;
@@ -13,6 +14,7 @@
   var filteredReviews = [];
   var RECENT_NUM_WEEKS = 2;
   var PAGE_SIZE = 3;
+  var gallery = new Gallery();
 
   filterBlock.classList.add('invisible');
 
@@ -24,15 +26,25 @@
     renderReviews(filteredReviews, currentPage);
   });
 
+  //adding event handler for image click
+  imagesBlock.addEventListener('click', _onImageClick);
+
+  //show gallery on image click
+  function _onImageClick(evt) {
+    evt.preventDefault();
+
+    if (evt.target.tagName === 'IMG') {
+      gallery.show();
+    }
+  }
+
   //delegating radio button click event
   function filterHandler(evt) {
     var target = evt.target;
 
-    if ( !(target.tagName === 'INPUT')) {
-      return;
+    if (target.tagName === 'INPUT') {
+      setActiveFilter(target.id);
     }
-
-    setActiveFilter(target.id);
   }
 
   //set and apply filter to reviews
