@@ -1,4 +1,4 @@
-/* global Review: true */
+/* global Review: true, Gallery: true */
 
 'use strict';
 
