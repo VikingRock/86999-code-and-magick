@@ -103,7 +103,11 @@
     }
 
     if (pageNumber === 0) {
-      reviewsList.innerHTML = '';
+      var renderedElements = document.querySelectorAll('.review');
+
+      Array.prototype.forEach.call(renderedElements, function(elm) {
+        reviewsList.removeChild(elm);
+      });
     }
 
     if (items[to]) {
@@ -115,6 +119,7 @@
 
     pageReviews.forEach(function(testimonial) {
       var reviewElement = new Review(testimonial);
+
       reviewElement.render();
       fragment.appendChild(reviewElement.element);
     });
