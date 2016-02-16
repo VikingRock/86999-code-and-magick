@@ -1,3 +1,5 @@
+/* global docCookies: true */
+
 'use strict';
 
 (function() {
@@ -96,8 +98,8 @@
 
     var cookieLife = new Date( now - myBDate + now.valueOf() ).toUTCString();
 
-    document.cookie = 'rate=' + currentRate + ';expires=' + cookieLife;
-    document.cookie = 'name=' + nameField.value + ';expires=' + cookieLife;
+    docCookies.setItem('rate', currentRate, cookieLife);
+    docCookies.setItem('name', nameField.value, cookieLife);
 
     form.submit();
   };
@@ -107,9 +109,12 @@
   nameField.required = true;
   reviewLabels[1].classList.add('invisible');
 
-  if (document.cookie) {
-    nameField.value = window.docCookies.getItem('name');
-    var defaultRate = window.docCookies.getItem('rate');
+  var name = docCookies.getItem('name');
+  var rate = docCookies.getItem('rate');
+
+  if (name && rate) {
+    nameField.value = docCookies.getItem('name');
+    var defaultRate = docCookies.getItem('rate');
 
     document.getElementById('review-mark-' + defaultRate).checked = true;
     reviewLabels[0].classList.add('invisible');

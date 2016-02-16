@@ -1,9 +1,12 @@
+/* global Review: true, Gallery: true */
+
 'use strict';
 
 (function() {
   var filterBlock = document.querySelector('.reviews-filter');
   var reviewsList = document.querySelector('.reviews-list');
   var reviewsBlock = document.querySelector('.reviews');
+  var imagesBlock = document.querySelector('.main-section.photogallery');
   var activeFilter = 'reviews-all';
   var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
   var currentPage = 0;
@@ -11,6 +14,7 @@
   var filteredReviews = [];
   var RECENT_NUM_WEEKS = 2;
   var PAGE_SIZE = 3;
+  var gallery = new Gallery();
 
   filterBlock.classList.add('invisible');
 
@@ -22,15 +26,25 @@
     renderReviews(filteredReviews, currentPage);
   });
 
+  //adding event handler for image click
+  imagesBlock.addEventListener('click', _onImageClick);
+
+  //show gallery on image click
+  function _onImageClick(evt) {
+    evt.preventDefault();
+
+    if (evt.target.tagName === 'IMG') {
+      gallery.show();
+    }
+  }
+
   //delegating radio button click event
   function filterHandler(evt) {
     var target = evt.target;
 
-    if ( !(target.tagName === 'INPUT')) {
-      return;
+    if (target.tagName === 'INPUT') {
+      setActiveFilter(target.id);
     }
-
-    setActiveFilter(target.id);
   }
 
   //set and apply filter to reviews
@@ -101,7 +115,11 @@
     }
 
     if (pageNumber === 0) {
-      reviewsList.innerHTML = '';
+      var renderedElements = document.querySelectorAll('.review');
+
+      Array.prototype.forEach.call(renderedElements, function(elm) {
+        reviewsList.removeChild(elm);
+      });
     }
 
     if (items[to]) {
@@ -112,8 +130,10 @@
     }
 
     pageReviews.forEach(function(testimonial) {
-      var element = getElementFromTemplate(testimonial);
-      fragment.appendChild(element);
+      var reviewElement = new Review(testimonial);
+
+      reviewElement.render();
+      fragment.appendChild(reviewElement.element);
     });
 
     reviewsList.appendChild(fragment);
@@ -122,7 +142,7 @@
   //load review list by XHR
   function getReviews() {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://o0.github.io/assets/json/reviews.json');
+    xhr.open('GET', 'https://o0.github.io/assets/json/reviews.json');
     xhr.timeout = 10000;
 
     xhr.onload = function(evt) {
@@ -151,49 +171,6 @@
     }
 
     xhr.send();
-  }
-
-  //create a new DOM element - review - from template and return this element
-  function getElementFromTemplate(templateData) {
-    var testimonialTemplate = document.getElementById('review-template');
-    var element;
-
-    if ('content' in testimonialTemplate) {
-      element = testimonialTemplate.content.childNodes[1].cloneNode(true);
-    } else {
-      element = testimonialTemplate.childNodes[1].cloneNode(true);
-    }
-
-    element.querySelector('.review-text').textContent = templateData.description;
-    element.querySelector('.review-author').setAttribute('alt', templateData.author.name);
-    element.querySelector('.review-author').setAttribute('title', templateData.author.name);
-
-    for (var i = 0; i < templateData.rating - 1; i++) {
-      var ratingClone = element.querySelector('.review-rating').cloneNode();
-      element.insertBefore(ratingClone, element.querySelector('.review-rating'));
-    }
-
-    var authorAvatar = new Image(124, 124);
-    var imageLoadTimeout;
-    var IMAGE_TIMEOUT = 1000;
-
-    authorAvatar.onload = function() {
-      clearTimeout(imageLoadTimeout);
-      element.querySelector('.review-author').setAttribute('src', authorAvatar.src);
-    };
-
-    authorAvatar.onerror = function() {
-      element.classList.add('review-load-failure');
-    };
-
-    authorAvatar.src = templateData.author.picture;
-
-    imageLoadTimeout = setTimeout( function() {
-      element.querySelector('.review-author').setAttribute('src', '');
-      element.classList.add('review-load-failure');
-    }, IMAGE_TIMEOUT);
-
-    return element;
   }
 
   getReviews();
