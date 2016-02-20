@@ -32,6 +32,10 @@
     this._sliderRight.removeEventListener('click', this._onSliderRight);
   };
 
+  Gallery.prototype.setPictures = function(photo) {
+
+  };
+
   Gallery.prototype._onCloseClick = function() {
     this.hide();
   };
