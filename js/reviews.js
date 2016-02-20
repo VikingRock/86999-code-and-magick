@@ -1,4 +1,4 @@
-/* global Review: true, Gallery: true */
+/* global Review: true, Gallery: true, Photo: true */
 
 'use strict';
 
@@ -15,6 +15,7 @@
   var RECENT_NUM_WEEKS = 2;
   var PAGE_SIZE = 3;
   var gallery = new Gallery();
+  var photos = document.querySelectorAll('.photogallery-image');
 
   filterBlock.classList.add('invisible');
 
@@ -176,5 +177,12 @@
   getReviews();
 
   filterBlock.classList.remove('invisible');
+
+  //creating array of Photos and pass it to the Gallery
+  var photosArr = Array.prototype.map.call(photos, function(obj) {
+    return new Photo(obj);
+  });
+  gallery.setPictures(photosArr);
+  gallery.setCurrentPicture(2);
 
 })();

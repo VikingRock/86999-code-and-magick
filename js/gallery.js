@@ -7,6 +7,9 @@
     this._closeButton = document.querySelector('.overlay-gallery-close');
     this._sliderLeft = document.querySelector('.overlay-gallery-control-left');
     this._sliderRight = document.querySelector('.overlay-gallery-control-right');
+    this._currentPhotoNum = document.querySelector('.preview-number-current');
+    this._totalPhotoNum = document.querySelector('.preview-number-total');
+    this._imageContainer = document.querySelector('.overlay-gallery-preview');
 
     this._onCloseClick = this._onCloseClick.bind(this);
     this._onDocumentKeyDown = this._onDocumentKeyDown.bind(this);
@@ -32,8 +35,18 @@
     this._sliderRight.removeEventListener('click', this._onSliderRight);
   };
 
-  Gallery.prototype.setPictures = function(photo) {
+  Gallery.prototype.setPictures = function(photos) {
+    this._photos = photos;
+    this._totalPhotoNum.textContent = photos.length;
+  };
 
+  Gallery.prototype.setCurrentPicture = function(number) {
+    this.currentPhoto = this._photos[number];
+    this._currentPhotoNum.textContent = number;
+
+    var image = new Image(600);
+    image.setAttribute('src', this.currentPhoto.image.src);
+    this._imageContainer.appendChild(image);
   };
 
   Gallery.prototype._onCloseClick = function() {
