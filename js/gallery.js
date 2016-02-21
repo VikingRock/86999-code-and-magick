@@ -59,8 +59,16 @@
   };
 
   Gallery.prototype._onDocumentKeyDown = function(evt) {
-    if (evt.keyCode === 27) {
-      this.hide();
+    switch (evt.keyCode) {
+      case 37:
+        this._onSliderLeft();
+        break;
+      case 39:
+        this._onSliderRight();
+        break;
+      case 27:
+        this.hide();
+        break;
     }
   };
 
