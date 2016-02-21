@@ -1,4 +1,4 @@
-/* global Review: true, Gallery: true, Photo: true */
+/* global Review: true, Gallery: true, Photo: true, Video: true */
 
 'use strict';
 
@@ -167,7 +167,11 @@
 
   //creating array of Photos and pass it to the Gallery
   var photosArr = Array.prototype.map.call(photos, function(obj) {
-    return new Photo(obj);
+    if (obj.hasAttribute('data-replacement-video')) {
+      return new Video(obj);
+    } else {
+      return new Photo(obj);
+    }
   });
 
   //delegating onclick event to each photo
