@@ -8,7 +8,6 @@ extends:
   "eslint:recommended"
 
 rules:
-  allowTernary: true
   indent: [2, 2, {SwitchCase: 1}]
   block-spacing: 2
   brace-style: [2, "1tbs"]

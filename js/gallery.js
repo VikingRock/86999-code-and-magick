@@ -65,7 +65,11 @@
       video.setAttribute('autoplay', '');
 
       video.addEventListener('click', function() {
-        video.paused ? video.play() : video.pause();
+        if (video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
       });
 
       this._imageContainer.appendChild(video);
