@@ -4,6 +4,7 @@
 
   function Review(data) {
     this._data = data;
+    this._data.reviewed = 'n/a';
     this._onUsefulClick = this._onUsefulClick.bind(this);
   }
 
@@ -12,25 +13,27 @@
     var no = this.element.querySelector('.review-quiz-answer-no');
     var delta = 1;
 
-    if (this.element.querySelector('.review-quiz-answer-active')) {
+    if (this._data.reviewed !== 'n/a') {
       delta = 2;
     }
 
     if (flag) {
-      if (yes.classList.contains('review-quiz-answer-active')) {
+      if (this._data.reviewed === 'yes') {
         return;
       }
       this._data.review_usefulness += delta;
       yes.classList.add('review-quiz-answer-active');
       no.classList.remove('review-quiz-answer-active');
+      this._data.reviewed = 'yes';
 
     } else {
-      if (no.classList.contains('review-quiz-answer-active')) {
+      if (this._data.reviewed === 'no') {
         return;
       }
       this._data.review_usefulness -= delta;
       no.classList.add('review-quiz-answer-active');
       yes.classList.remove('review-quiz-answer-active');
+      this._data.reviewed = 'no';
     }
   };
 
