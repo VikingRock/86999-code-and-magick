@@ -1,4 +1,4 @@
-/* global Photo: true */
+/* global Photo: true, inherit: true */
 
 'use strict';
 
@@ -20,7 +20,7 @@
     this.getVideoUrl = this.getVideoUrl.bind(this);
   };
 
-  Video.prototype = Object.create(Photo.prototype);
+  inherit(Video, Photo);
 
   Video.prototype.getVideoUrl = function() {
     return this._videoUrl;
