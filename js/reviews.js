@@ -6,7 +6,6 @@
   var filterBlock = document.querySelector('.reviews-filter');
   var reviewsList = document.querySelector('.reviews-list');
   var reviewsBlock = document.querySelector('.reviews');
-  var imagesBlock = document.querySelector('.main-section.photogallery');
   var activeFilter = 'reviews-all';
   var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
   var currentPage = 0;
@@ -26,18 +25,6 @@
   showMoreReviewsBtn.addEventListener('click', function() {
     renderReviews(filteredReviews, currentPage);
   });
-
-  //adding event handler for image click
-  imagesBlock.addEventListener('click', _onImageClick);
-
-  //show gallery on image click
-  function _onImageClick(evt) {
-    evt.preventDefault();
-
-    if (evt.target.tagName === 'IMG') {
-      gallery.show();
-    }
-  }
 
   //delegating radio button click event
   function filterHandler(evt) {
@@ -182,7 +169,15 @@
   var photosArr = Array.prototype.map.call(photos, function(obj) {
     return new Photo(obj);
   });
+
+  //delegating onclick event to each photo
+  photosArr.forEach(function(photo, index) {
+    photo.onClick = function() {
+      gallery.show();
+      gallery.setCurrentPicture(index);
+    };
+  });
+
   gallery.setPictures(photosArr);
-  gallery.setCurrentPicture(2);
 
 })();

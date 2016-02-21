@@ -42,7 +42,12 @@
 
   Gallery.prototype.setCurrentPicture = function(number) {
     this.currentPhoto = this._photos[number];
-    this._currentPhotoNum.textContent = number;
+    this._currentPhotoNum.textContent = +number + 1;
+
+    if (this._imageContainer.lastElementChild.tagName === 'IMG') {
+      var childToRemove = this._imageContainer.lastElementChild;
+      this._imageContainer.removeChild(childToRemove);
+    }
 
     var image = new Image(600);
     image.setAttribute('src', this.currentPhoto.image.src);
@@ -60,11 +65,23 @@
   };
 
   Gallery.prototype._onSliderLeft = function() {
-    console.dir(this);
+    var nextNumber = this._currentPhotoNum.textContent - 2;
+
+    if ( parseInt(this._currentPhotoNum.textContent, 10) === 1) {
+      nextNumber = this._photos.length - 1;
+    }
+
+    this.setCurrentPicture(nextNumber);
   };
 
   Gallery.prototype._onSliderRight = function() {
-    console.dir(this);
+    var nextNumber = this._currentPhotoNum.textContent;
+
+    if (parseInt(this._currentPhotoNum.textContent, 10) === this._photos.length) {
+      nextNumber = 0;
+    }
+
+    this.setCurrentPicture(nextNumber);
   };
 
   window.Gallery = Gallery;
