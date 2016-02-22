@@ -40,8 +40,9 @@
   //click on review usefulness yes/no
   Review.prototype._onUsefulClick = function(evt) {
     evt.preventDefault();
-    if (evt.target.classList.contains('review-quiz-answer')) {
-      if (evt.target.classList.contains('review-quiz-answer-yes')) {
+    var cl = evt.target.classList;
+    if (cl.contains('review-quiz-answer')) {
+      if (cl.contains('review-quiz-answer-yes')) {
         this.setUsefulness(true);
       } else {
         this.setUsefulness(false);

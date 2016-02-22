@@ -30,7 +30,7 @@
   function filterHandler(evt) {
     var target = evt.target;
 
-    if (target.tagName === 'INPUT') {
+    if (target.tagName.toUpperCase() === 'INPUT') {
       setActiveFilter(target.id);
     }
   }

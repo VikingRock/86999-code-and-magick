@@ -46,7 +46,7 @@
     this.currentPhoto = this._photos[number];
     this._currentPhotoNum.textContent = +number + 1;
 
-    if (this._imageContainer.lastElementChild.tagName !== 'DIV') {
+    if (this._imageContainer.lastElementChild.tagName.toUpperCase() !== 'DIV') {
       var childToRemove = this._imageContainer.lastElementChild;
       this._imageContainer.removeChild(childToRemove);
     }
