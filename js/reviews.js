@@ -1,4 +1,4 @@
-/* global Review: true, Gallery: true */
+/* global Review: true, Gallery: true, Photo: true, Video: true */
 
 'use strict';
 
@@ -6,7 +6,6 @@
   var filterBlock = document.querySelector('.reviews-filter');
   var reviewsList = document.querySelector('.reviews-list');
   var reviewsBlock = document.querySelector('.reviews');
-  var imagesBlock = document.querySelector('.main-section.photogallery');
   var activeFilter = 'reviews-all';
   var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
   var currentPage = 0;
@@ -15,6 +14,7 @@
   var RECENT_NUM_WEEKS = 2;
   var PAGE_SIZE = 3;
   var gallery = new Gallery();
+  var photos = document.querySelectorAll('.photogallery-image');
 
   filterBlock.classList.add('invisible');
 
@@ -26,23 +26,11 @@
     renderReviews(filteredReviews, currentPage);
   });
 
-  //adding event handler for image click
-  imagesBlock.addEventListener('click', _onImageClick);
-
-  //show gallery on image click
-  function _onImageClick(evt) {
-    evt.preventDefault();
-
-    if (evt.target.tagName === 'IMG') {
-      gallery.show();
-    }
-  }
-
   //delegating radio button click event
   function filterHandler(evt) {
     var target = evt.target;
 
-    if (target.tagName === 'INPUT') {
+    if (target.tagName.toUpperCase() === 'INPUT') {
       setActiveFilter(target.id);
     }
   }
@@ -176,5 +164,24 @@
   getReviews();
 
   filterBlock.classList.remove('invisible');
+
+  //creating array of Photos and pass it to the Gallery
+  var photosArr = Array.prototype.map.call(photos, function(obj) {
+    if (obj.hasAttribute('data-replacement-video')) {
+      return new Video(obj);
+    } else {
+      return new Photo(obj);
+    }
+  });
+
+  //delegating onclick event to each photo
+  photosArr.forEach(function(photo, index) {
+    photo.onClick = function() {
+      gallery.show();
+      gallery.setCurrentPicture(index);
+    };
+  });
+
+  gallery.setPictures(photosArr);
 
 })();
