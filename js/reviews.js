@@ -1,5 +1,3 @@
-/* global Review: true, Gallery: true, Photo: true, Video: true */
-
 'use strict';
 
 (function() {
