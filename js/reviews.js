@@ -3,6 +3,11 @@
 'use strict';
 
 (function() {
+  var Gallery = require('gallery');
+  var Photo = require('photo');
+  var Video = require('video');
+  var Review = require('review');
+
   var filterBlock = document.querySelector('.reviews-filter');
   var reviewsList = document.querySelector('.reviews-list');
   var reviewsBlock = document.querySelector('.reviews');

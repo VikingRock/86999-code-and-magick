@@ -1,8 +1,7 @@
-/* global Video: true */
-
 'use strict';
 
 (function() {
+  var Video = require('video');
 
   var Gallery = function() {
     this.element = document.querySelector('.overlay-gallery');
@@ -114,5 +113,5 @@
     this.setCurrentPicture(nextNumber);
   };
 
-  window.Gallery = Gallery;
+  module.exports = Gallery;
 })();
