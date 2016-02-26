@@ -1,8 +1,8 @@
-/* global Photo: true, inherit: true */
-
 'use strict';
 
 (function() {
+  var inherit = require('inherit');
+  var Photo = require('photo');
 
   var Video = function(element) {
     this.image = element.children[0];
@@ -26,5 +26,5 @@
     return this._videoUrl;
   };
 
-  window.Video = Video;
+  module.exports = Video;
 })();

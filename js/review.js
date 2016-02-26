@@ -92,5 +92,5 @@
     }.bind(this), IMAGE_TIMEOUT);
   };
 
-  window.Review = Review;
+  module.exports = Review;
 })();

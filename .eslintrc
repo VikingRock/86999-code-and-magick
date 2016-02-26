@@ -4,9 +4,6 @@ env:
   browser: true
   node: true
 
-globals:
-  define: true
-
 extends:
   "eslint:recommended"
 
