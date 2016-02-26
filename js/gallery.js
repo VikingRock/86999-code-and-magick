@@ -47,7 +47,7 @@
   };
 
   /**
-   * loads photos into gallery and counts their number
+   * loads photos into gallery and counts their total number
    * @param {Array} photos
    */
   Gallery.prototype.setPictures = function(photos) {
