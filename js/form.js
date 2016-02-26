@@ -15,11 +15,10 @@
   var feedbackField = document.getElementById('review-text');
   var rateFields = document.querySelectorAll('[name=review-mark]');
 
-  //------------------- functions -----------------
-
-
-  // makes Feedback required if Rate <=2
-  // invokes checkRequired function
+  /**
+   * Function makes Feedback required if Rate <=2
+   * invokes checkRequired function
+   */
   function makeRequired() {
 
     feedbackField.required = false;
@@ -32,8 +31,10 @@
     boundCheck();
   }
 
-  // shows/hides labels for required fields;
-  // invokes checkSubmit function
+  /**
+   * shows/hides labels for required fields;
+   * invokes checkSubmit function
+   */
   function checkRequired() {
     var identifier = this.id;
     var targetLabel = document.querySelector('[for=' + identifier + '].review-fields-label');
@@ -47,7 +48,10 @@
     checkSubmit();
   }
 
-  // checks if all required fields are not empty
+  /**
+   * checks if all required fields are filled
+   * if true, enables submit button
+   */
   function checkSubmit() {
     for (var i = 0; i < reviewLabels.length; i++) {
       if ( !reviewLabels[i].classList.contains('invisible') ) {  //if a required field is empty
@@ -62,17 +66,24 @@
   }
 
 
-  //------------------- event handlers -----------------
-
+  /**
+   * check rate and make feedback required if rate <=2
+   */
   for (var i = 0; i < rateFields.length; i++) {
     rateFields[i].onchange = function() {
       makeRequired();
     };
   }
 
+  /**
+   * check if required fields are not empty
+   */
   nameField.oninput = checkRequired;
   feedbackField.oninput = checkRequired;
 
+  /**
+   * form open and close event
+   */
   formOpenButton.onclick = function(evt) {
     evt.preventDefault();
     formContainer.classList.remove('invisible');
@@ -83,11 +94,17 @@
     formContainer.classList.add('invisible');
   };
 
+  /**
+   * form submit event
+   */
   form.onsubmit = function(event) {
     event.preventDefault();
 
-    var currentRate = document.querySelector('input[name="review-mark"]:checked').value;
-    var myBDate = new Date('1988 10 26');
+    /**
+     * @const {string}
+     */
+    var MY_BIRTHDAY = '1988 10 26';
+    var myBDate = new Date(MY_BIRTHDAY);
     var now = new Date();
 
     if ( ( now.getMonth() === myBDate.getMonth() && now.getDate() >= myBDate.getDate() ) || now.getMonth() > myBDate.getMonth() ) {
@@ -97,6 +114,7 @@
     }
 
     var cookieLife = new Date( now - myBDate + now.valueOf() ).toUTCString();
+    var currentRate = document.querySelector('input[name="review-mark"]:checked').value;
 
     docCookies.setItem('rate', currentRate, cookieLife);
     docCookies.setItem('name', nameField.value, cookieLife);
@@ -104,11 +122,16 @@
     form.submit();
   };
 
-  //------------------- default settings -----------------
+  /**
+   * default settings
+   */
 
   nameField.required = true;
   reviewLabels[1].classList.add('invisible');
 
+  /**
+   * setting cookies if exist
+   */
   var name = docCookies.getItem('name');
   var rate = docCookies.getItem('rate');
 
@@ -119,6 +142,9 @@
     document.getElementById('review-mark-' + defaultRate).checked = true;
     reviewLabels[0].classList.add('invisible');
     reviewBlock.classList.add('invisible');
+    /**
+     * function call to check fields and set them required if needed
+     */
     makeRequired();
 
   } else {

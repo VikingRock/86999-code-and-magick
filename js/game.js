@@ -756,6 +756,9 @@
   var scrollTimeout;
   var allowParallax = true;
 
+  /**
+   * Function moves clouds left/right on scroll, when clouds are visible
+   */
   function scrollParallax() {
     var cloudCoordinates = clouds.getBoundingClientRect();
     var gameCoordinates = gameDiv.getBoundingClientRect();
@@ -766,6 +769,9 @@
 
     clearTimeout(scrollTimeout);
 
+    /**
+     * Checking clouds visibility after 100ms of pause
+     */
     scrollTimeout = setTimeout( function() {
 
       if (cloudCoordinates.bottom < 0) {
@@ -774,6 +780,9 @@
         allowParallax = true;
       }
 
+      /**
+       * Pausing game, if not visible
+       */
       if (gameCoordinates.bottom < 0) {
         game.setGameStatus(window.Game.Verdict.PAUSE);
       }
