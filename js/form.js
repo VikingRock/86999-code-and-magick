@@ -60,8 +60,7 @@
       submitForm.disabled = false;
     }
   }
-
-
+  
   //------------------- event handlers -----------------
 
   for (var i = 0; i < rateFields.length; i++) {
