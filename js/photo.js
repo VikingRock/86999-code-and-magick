@@ -15,5 +15,5 @@
     }.bind(this));
   };
 
-  window.Photo = Photo;
+  module.exports = Photo;
 })();

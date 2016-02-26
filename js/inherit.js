@@ -13,6 +13,6 @@
     ChildFoo.prototype.constructor = ChildFoo;
   }
 
-  window.inherit = inherit;
+  module.exports = inherit;
 
 })();
