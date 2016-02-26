@@ -129,7 +129,7 @@
       nextNumber = this._photos.length - 1;
     }
 
-    this.setCurrentPicture(parseInt(nextNumber));
+    this.setCurrentPicture(parseInt(nextNumber, 10));
   };
 
   /**
@@ -142,7 +142,7 @@
       nextNumber = 0;
     }
 
-    this.setCurrentPicture(parseInt(nextNumber));
+    this.setCurrentPicture(parseInt(nextNumber, 10));
   };
 
   module.exports = Gallery;
