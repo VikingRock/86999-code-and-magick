@@ -243,14 +243,15 @@
    */
   photosArr.forEach(function(photo, index) {
     photo.onClick = function() {
-      gallery.show();
-      gallery.setCurrentPicture(index);
+      location.hash = '#photo/' + photo.image.getAttribute('src');
     };
   });
 
   /**
    * pass an array of photos to the gallery
+   * and check the location hash to restore location
    */
   gallery.setPictures(photosArr);
+  gallery.restoreFromHash();
 
 })();
