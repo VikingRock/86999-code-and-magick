@@ -197,7 +197,6 @@
       reviews = JSON.parse(stringData);
       reviewsBlock.classList.remove('reviews-list-loading');
       setActiveFilter(activeFilter, true);
-      renderReviews(filteredReviews, 0);
     };
 
     xhr.onloadstart = function() {
