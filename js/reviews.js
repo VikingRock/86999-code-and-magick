@@ -241,7 +241,7 @@
   /**
    * delegating onclick event to each photo or video
    */
-  photosArr.forEach(function(photo, index) {
+  photosArr.forEach(function(photo) {
     photo.onClick = function() {
       location.hash = '#photo/' + photo.image.getAttribute('src');
     };
