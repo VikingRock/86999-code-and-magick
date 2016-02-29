@@ -5,7 +5,7 @@ var ReviewData = function(dataObj) {
 };
 
 ReviewData.prototype.getReviewUsefulness = function() {
-
+  return this._data.review_usefulness;
 };
 
-module.exports = Gallery;
+module.exports = ReviewData;

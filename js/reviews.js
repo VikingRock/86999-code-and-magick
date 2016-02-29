@@ -4,6 +4,7 @@ var Gallery = require('gallery');
 var Photo = require('photo');
 var Video = require('video');
 var Review = require('review');
+var ReviewData = require('review-data');
 
 /**
  * number of weeks to show in recent filter
@@ -194,6 +195,11 @@ function getReviews() {
   xhr.onload = function(evt) {
     var stringData = evt.target.response;
     reviews = JSON.parse(stringData);
+    reviews.forEach(function(testimonial) {
+      var reviewElement = new ReviewData(testimonial);
+      testimonial = reviewElement;
+    });
+
     reviewsBlock.classList.remove('reviews-list-loading');
     setActiveFilter(activeFilter, true);
   };
