@@ -69,12 +69,11 @@ Gallery.prototype.setCurrentPicture = function(number) {
 
   } else if (typeof number === 'string') {
     var currentIndex;
-    this._photos.forEach(function(target, index) {
-      if (target.image.getAttribute('src') === number) {
-        currentIndex = index;
-        return;
-      }
+    this._photos.find(function(target, index) {
+      currentIndex = index;
+      return (target.image.getAttribute('src') === number);
     });
+
     this.currentPhoto = this._photos[currentIndex];
     this._currentPhotoNum.textContent = +currentIndex + 1;
   }

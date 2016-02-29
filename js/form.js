@@ -38,7 +38,7 @@ function checkRequired() {
   var identifier = this.id;
   var targetLabel = document.querySelector('[for=' + identifier + '].review-fields-label');
 
-  if ( (this.required) && (this.value !== '') || (!this.required) ) {
+  if ( ((this.required) && (this.value !== '')) || (!this.required) ) {
     targetLabel.classList.add('invisible');
   } else {
     targetLabel.classList.remove('invisible');
@@ -69,9 +69,7 @@ function checkSubmit() {
  * check rate and make feedback required if rate <=2
  */
 for (var i = 0; i < rateFields.length; i++) {
-  rateFields[i].onchange = function() {
-    makeRequired();
-  };
+  rateFields[i].onchange = makeRequired;
 }
 
 /**
