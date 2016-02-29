@@ -14,22 +14,37 @@
   var currentPage = 0;
   var reviews = [];
   var filteredReviews = [];
+  /**
+   * number of weeks to show in recent filter
+   * @type {number}
+   */
   var RECENT_NUM_WEEKS = 2;
+  /**
+   * how many reviews to load each time showMoreReviewsBtn button is clicked
+   * @type {number}
+   */
   var PAGE_SIZE = 3;
   var gallery = new Gallery();
   var photos = document.querySelectorAll('.photogallery-image');
 
   filterBlock.classList.add('invisible');
 
-  //adding event handler for filter radio buttons
+  /**
+   * adding event handler for filter radio buttons
+   */
   filterBlock.addEventListener('click', filterHandler);
 
-  //button click handler for showing another page
+  /**
+   * button click handler for showing another page
+   */
   showMoreReviewsBtn.addEventListener('click', function() {
     renderReviews(filteredReviews, currentPage);
   });
 
-  //delegating radio button click event
+  /**
+   * delegating radio button click event
+   * @param {Event} evt
+   */
   function filterHandler(evt) {
     var target = evt.target;
 
@@ -38,7 +53,10 @@
     }
   }
 
-  //set and apply filter to reviews
+  /**
+   * set and apply filter to reviews
+   * @param {String} id
+   */
   function setActiveFilter(id) {
 
     if (activeFilter === id) {
@@ -86,12 +104,19 @@
         break;
     }
 
-    currentPage = 0;  //when filter changes, show array from page = 0
+    /**
+     * when filter changes, show array from page = 0
+     */
+    currentPage = 0;
     activeFilter = id;
     renderReviews(filteredReviews, currentPage);
   }
 
-  //rendering a new DOM element created in getElementFromTemplate()
+  /**
+   * rendering new DOM elements from current page of items array
+   * @param {Array} items
+   * @param {Number} pageNumber
+   */
   function renderReviews(items, pageNumber) {
     var fragment = document.createDocumentFragment();
 
@@ -105,6 +130,9 @@
       pageReviews = items.slice(from);
     }
 
+    /**
+     * delete all rendered reviews, if a new filter was selected
+     */
     if (pageNumber === 0) {
       var renderedElements = document.querySelectorAll('.review');
 
@@ -113,6 +141,10 @@
       });
     }
 
+    /**
+     * if next element in items doesn't exist
+     * hide showMoreReviewsBtn button
+     */
     if (items[to]) {
       showMoreReviewsBtn.classList.remove('invisible');
       currentPage++;
@@ -120,6 +152,9 @@
       showMoreReviewsBtn.classList.add('invisible');
     }
 
+    /**
+     * create Review objects and render them
+     */
     pageReviews.forEach(function(testimonial) {
       var reviewElement = new Review(testimonial);
 
@@ -130,7 +165,9 @@
     reviewsList.appendChild(fragment);
   }
 
-  //load review list by XHR
+  /**
+   * load review list by XHR
+   */
   function getReviews() {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'https://o0.github.io/assets/json/reviews.json');
@@ -156,6 +193,9 @@
       addError();
     };
 
+    /**
+     * show error message when data not loaded
+     */
     function addError() {
       reviewsBlock.classList.remove('reviews-list-loading');
       reviewsBlock.classList.add('reviews-load-failure');
@@ -168,7 +208,10 @@
 
   filterBlock.classList.remove('invisible');
 
-  //creating array of Photos and pass it to the Gallery
+  /**
+   * creating array of Photos or Videos
+   * and pass it to the Gallery
+   */
   var photosArr = Array.prototype.map.call(photos, function(obj) {
     if (obj.hasAttribute('data-replacement-video')) {
       return new Video(obj);
@@ -177,7 +220,9 @@
     }
   });
 
-  //delegating onclick event to each photo
+  /**
+   * delegating onclick event to each photo or video
+   */
   photosArr.forEach(function(photo, index) {
     photo.onClick = function() {
       gallery.show();
@@ -185,6 +230,9 @@
     };
   });
 
+  /**
+   * pass an array of photos to the gallery
+   */
   gallery.setPictures(photosArr);
 
 })();
