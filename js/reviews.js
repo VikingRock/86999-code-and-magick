@@ -35,6 +35,7 @@ var activeFilter = localStorage.getItem('activeFilter') || filterNames.ALL;
 var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
 var currentPage = 0;
 var reviews = [];
+var reviewObjects = [];
 var filteredReviews = [];
 var gallery = new Gallery();
 var photos = document.querySelectorAll('.photogallery-image');
@@ -76,43 +77,43 @@ function setActiveFilter(id, isFirstLoad) {
     return;
   }
 
-  filteredReviews = reviews.slice(0);
+  filteredReviews = reviewObjects.slice(0);
 
   switch (id) {
     case filterNames.RECENT:
       filteredReviews = filteredReviews.filter(function(item) {
         var now = new Date();
-        var reviewDate = new Date(item.date);
+        var reviewDate = new Date(item.getReviewDate());
         return (now - reviewDate) < (RECENT_NUM_WEEKS * 7 * 24 * 60 * 60 * 1000);
       });
       filteredReviews.sort(function(a, b) {
-        var leftDate = new Date(a.date);
-        var rightDate = new Date(b.date);
+        var leftDate = new Date(a.getReviewDate());
+        var rightDate = new Date(b.getReviewDate());
         return rightDate - leftDate;
       });
       break;
 
     case filterNames.GOOD:
       filteredReviews = filteredReviews.filter(function(item) {
-        return item.rating >= 3;
+        return item.getReviewRating() >= 3;
       });
       filteredReviews.sort(function(a, b) {
-        return b.rating - a.rating;
+        return b.getReviewRating() - a.getReviewRating();
       });
       break;
 
     case filterNames.BAD:
       filteredReviews = filteredReviews.filter(function(item) {
-        return item.rating <= 2;
+        return item.getReviewRating() <= 2;
       });
       filteredReviews.sort(function(a, b) {
-        return a.rating - b.rating;
+        return a.getReviewRating() - b.getReviewRating();
       });
       break;
 
     case filterNames.POPULAR:
       filteredReviews.sort(function(a, b) {
-        return b.review_usefulness - a.review_usefulness;
+        return b.getReviewUsefulness() - a.getReviewUsefulness();
       });
       break;
   }
@@ -194,9 +195,9 @@ function getReviews() {
   xhr.onload = function(evt) {
     var stringData = evt.target.response;
     reviews = JSON.parse(stringData);
-    reviews.forEach(function(testimonial) {
-      var reviewElement = new ReviewData(testimonial);
-      testimonial = reviewElement;
+
+    reviews.forEach(function(item, index) {
+      reviewObjects[index] = new ReviewData(item);
     });
 
     reviewsBlock.classList.remove('reviews-list-loading');
