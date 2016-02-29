@@ -6,49 +6,81 @@
   var Video = require('video');
   var Review = require('review');
 
+  /**
+   * number of weeks to show in recent filter
+   * @type {number}
+   */
+  var RECENT_NUM_WEEKS = 2;
+  /**
+   * how many reviews to load each time showMoreReviewsBtn button is clicked
+   * @type {number}
+   */
+  var PAGE_SIZE = 3;
+  /**
+   * filter names list
+   * @enum {String}
+   */
+  var filterNames = {
+    ALL: 'reviews-all',
+    RECENT: 'reviews-recent',
+    GOOD: 'reviews-good',
+    BAD: 'reviews-bad',
+    POPULAR: 'reviews-popular'
+  };
+
   var filterBlock = document.querySelector('.reviews-filter');
   var reviewsList = document.querySelector('.reviews-list');
   var reviewsBlock = document.querySelector('.reviews');
-  var activeFilter = 'reviews-all';
+  var activeFilter = localStorage.getItem('activeFilter') || filterNames.ALL;
+  document.getElementById(activeFilter).setAttribute('checked', '');
   var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
   var currentPage = 0;
   var reviews = [];
   var filteredReviews = [];
-  var RECENT_NUM_WEEKS = 2;
-  var PAGE_SIZE = 3;
   var gallery = new Gallery();
   var photos = document.querySelectorAll('.photogallery-image');
 
   filterBlock.classList.add('invisible');
 
-  //adding event handler for filter radio buttons
+  /**
+   * adding event handler for filter radio buttons
+   */
   filterBlock.addEventListener('click', filterHandler);
 
-  //button click handler for showing another page
+  /**
+   * button click handler for showing another page
+   */
   showMoreReviewsBtn.addEventListener('click', function() {
     renderReviews(filteredReviews, currentPage);
   });
 
-  //delegating radio button click event
+  /**
+   * delegating radio button click event
+   * @param {Event} evt
+   */
   function filterHandler(evt) {
     var target = evt.target;
 
     if (target.tagName.toUpperCase() === 'INPUT') {
-      setActiveFilter(target.id);
+      setActiveFilter(target.id, false);
     }
   }
 
-  //set and apply filter to reviews
-  function setActiveFilter(id) {
+  /**
+   * set and apply filter to reviews
+   * @param {String} id
+   * @param {Boolean} isFirstLoad
+   */
+  function setActiveFilter(id, isFirstLoad) {
 
-    if (activeFilter === id) {
+    if (activeFilter === id && !isFirstLoad) {
       return;
     }
 
     filteredReviews = reviews.slice(0);
 
     switch (id) {
-      case 'reviews-recent':
+      case filterNames.RECENT:
         filteredReviews = filteredReviews.filter(function(item) {
           var now = new Date();
           var reviewDate = new Date(item.date);
@@ -61,7 +93,7 @@
         });
         break;
 
-      case 'reviews-good':
+      case filterNames.GOOD:
         filteredReviews = filteredReviews.filter(function(item) {
           return item.rating >= 3;
         });
@@ -70,7 +102,7 @@
         });
         break;
 
-      case 'reviews-bad':
+      case filterNames.BAD:
         filteredReviews = filteredReviews.filter(function(item) {
           return item.rating <= 2;
         });
@@ -79,19 +111,31 @@
         });
         break;
 
-      case 'reviews-popular':
+      case filterNames.POPULAR:
         filteredReviews.sort(function(a, b) {
           return b.review_usefulness - a.review_usefulness;
         });
         break;
     }
 
-    currentPage = 0;  //when filter changes, show array from page = 0
+    /**
+     * when filter changes, show array from page = 0
+     */
+    currentPage = 0;
     activeFilter = id;
+
+    /**
+     * saving last applied filter to localStorage
+     */
+    localStorage.setItem('activeFilter', id);
     renderReviews(filteredReviews, currentPage);
   }
 
-  //rendering a new DOM element created in getElementFromTemplate()
+  /**
+   * rendering new DOM elements from current page of items array
+   * @param {Array} items
+   * @param {Number} pageNumber
+   */
   function renderReviews(items, pageNumber) {
     var fragment = document.createDocumentFragment();
 
@@ -105,6 +149,9 @@
       pageReviews = items.slice(from);
     }
 
+    /**
+     * delete all rendered reviews, if a new filter was selected
+     */
     if (pageNumber === 0) {
       var renderedElements = document.querySelectorAll('.review');
 
@@ -113,6 +160,10 @@
       });
     }
 
+    /**
+     * if next element in items doesn't exist
+     * hide showMoreReviewsBtn button
+     */
     if (items[to]) {
       showMoreReviewsBtn.classList.remove('invisible');
       currentPage++;
@@ -120,6 +171,9 @@
       showMoreReviewsBtn.classList.add('invisible');
     }
 
+    /**
+     * create Review objects and render them
+     */
     pageReviews.forEach(function(testimonial) {
       var reviewElement = new Review(testimonial);
 
@@ -130,7 +184,9 @@
     reviewsList.appendChild(fragment);
   }
 
-  //load review list by XHR
+  /**
+   * load review list by XHR
+   */
   function getReviews() {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'https://o0.github.io/assets/json/reviews.json');
@@ -140,8 +196,7 @@
       var stringData = evt.target.response;
       reviews = JSON.parse(stringData);
       reviewsBlock.classList.remove('reviews-list-loading');
-      renderReviews(reviews, 0);
-      filteredReviews = reviews.slice(0);
+      setActiveFilter(activeFilter, true);
     };
 
     xhr.onloadstart = function() {
@@ -156,6 +211,9 @@
       addError();
     };
 
+    /**
+     * show error message when data not loaded
+     */
     function addError() {
       reviewsBlock.classList.remove('reviews-list-loading');
       reviewsBlock.classList.add('reviews-load-failure');
@@ -168,7 +226,10 @@
 
   filterBlock.classList.remove('invisible');
 
-  //creating array of Photos and pass it to the Gallery
+  /**
+   * creating array of Photos or Videos
+   * and pass it to the Gallery
+   */
   var photosArr = Array.prototype.map.call(photos, function(obj) {
     if (obj.hasAttribute('data-replacement-video')) {
       return new Video(obj);
@@ -177,7 +238,9 @@
     }
   });
 
-  //delegating onclick event to each photo
+  /**
+   * delegating onclick event to each photo or video
+   */
   photosArr.forEach(function(photo, index) {
     photo.onClick = function() {
       gallery.show();
@@ -185,6 +248,9 @@
     };
   });
 
+  /**
+   * pass an array of photos to the gallery
+   */
   gallery.setPictures(photosArr);
 
 })();

@@ -1,18 +1,31 @@
 'use strict';
 
 (function() {
-
+  /**
+   * creates a Review object and renders it to the page
+   * @constructor
+   * @param {Object} data
+   */
   function Review(data) {
     this._data = data;
     this._data.reviewed = 'n/a';
     this._onUsefulClick = this._onUsefulClick.bind(this);
   }
 
+  /**
+   * modifies usefulness score for Review
+   * and displays user's choice
+   * @param {Boolean} flag
+   */
   Review.prototype.setUsefulness = function(flag) {
     var yes = this.element.querySelector('.review-quiz-answer-yes');
     var no = this.element.querySelector('.review-quiz-answer-no');
     var delta = 1;
 
+    /**
+     * if user has already clicked before
+     * set delta = 2
+     */
     if (this._data.reviewed !== 'n/a') {
       delta = 2;
     }
@@ -37,7 +50,11 @@
     }
   };
 
-  //click on review usefulness yes/no
+  /**
+   * when review usefulness yes/no clicked
+   * call setUsefulness function
+   * @param {Event} evt
+   */
   Review.prototype._onUsefulClick = function(evt) {
     evt.preventDefault();
     var cl = evt.target.classList;
@@ -50,7 +67,10 @@
     }
   };
 
-  //create a new DOM element - review - from template and return this element
+  /**
+   * render a new DOM element - review -
+   * from template and get its content from _data object
+   */
   Review.prototype.render = function() {
     var testimonialTemplate = document.getElementById('review-template');
 
@@ -73,6 +93,9 @@
 
     var authorAvatar = new Image(124, 124);
     var imageLoadTimeout;
+    /**
+     * @type {number}
+     */
     var IMAGE_TIMEOUT = 1000;
 
     authorAvatar.onload = function() {

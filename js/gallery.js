@@ -3,6 +3,10 @@
 (function() {
   var Video = require('video');
 
+  /**
+   * creates a Gallery object to display a set of photos or videos in a light box
+   * @constructor
+   */
   var Gallery = function() {
     this.element = document.querySelector('.overlay-gallery');
     this._closeButton = document.querySelector('.overlay-gallery-close');
@@ -18,6 +22,9 @@
     this._onSliderRight = this._onSliderRight.bind(this);
   };
 
+  /**
+   * shows Gallery and adds event listeners for close, keyboard, and slider
+   */
   Gallery.prototype.show = function() {
     this.element.classList.remove('invisible');
 
@@ -27,6 +34,9 @@
     this._sliderRight.addEventListener('click', this._onSliderRight);
   };
 
+  /**
+   * hides Gallery and removes event listeners for close, keyboard, and slider
+   */
   Gallery.prototype.hide = function() {
     this.element.classList.add('invisible');
 
@@ -36,11 +46,20 @@
     this._sliderRight.removeEventListener('click', this._onSliderRight);
   };
 
+  /**
+   * loads photos into gallery and counts their total number
+   * @param {Array} photos
+   */
   Gallery.prototype.setPictures = function(photos) {
     this._photos = photos;
     this._totalPhotoNum.textContent = photos.length;
   };
 
+  /**
+   * renders a particular photo or video inside the gallery
+   * renders photo number
+   * @param {Number} number
+   */
   Gallery.prototype.setCurrentPicture = function(number) {
     this.currentPhoto = this._photos[number];
     this._currentPhotoNum.textContent = +number + 1;
@@ -75,10 +94,17 @@
     }
   };
 
+  /**
+   * hides gallery when _onCloseClick event fires
+   */
   Gallery.prototype._onCloseClick = function() {
     this.hide();
   };
 
+  /**
+   * listens to keyboard events to call slide photos or close gallery
+   * @param {Event} evt
+   */
   Gallery.prototype._onDocumentKeyDown = function(evt) {
     switch (evt.keyCode) {
       case 37:
@@ -93,6 +119,9 @@
     }
   };
 
+  /**
+   * displays previous photo
+   */
   Gallery.prototype._onSliderLeft = function() {
     var nextNumber = this._currentPhotoNum.textContent - 2;
 
@@ -100,9 +129,12 @@
       nextNumber = this._photos.length - 1;
     }
 
-    this.setCurrentPicture(nextNumber);
+    this.setCurrentPicture(parseInt(nextNumber, 10));
   };
 
+  /**
+   * displays next photo
+   */
   Gallery.prototype._onSliderRight = function() {
     var nextNumber = this._currentPhotoNum.textContent;
 
@@ -110,7 +142,7 @@
       nextNumber = 0;
     }
 
-    this.setCurrentPicture(nextNumber);
+    this.setCurrentPicture(parseInt(nextNumber, 10));
   };
 
   module.exports = Gallery;
