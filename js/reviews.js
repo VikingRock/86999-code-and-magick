@@ -31,7 +31,6 @@ var filterBlock = document.querySelector('.reviews-filter');
 var reviewsList = document.querySelector('.reviews-list');
 var reviewsBlock = document.querySelector('.reviews');
 var activeFilter = localStorage.getItem('activeFilter') || filterNames.ALL;
-document.getElementById(activeFilter).setAttribute('checked', '');
 var showMoreReviewsBtn = document.querySelector('.reviews-controls-more');
 var currentPage = 0;
 var reviews = [];
@@ -202,13 +201,8 @@ function getReviews() {
     reviewsBlock.classList.add('reviews-list-loading');
   };
 
-  xhr.ontimeout = function() {
-    addError();
-  };
-
-  xhr.onerror = function() {
-    addError();
-  };
+  xhr.ontimeout = addError;
+  xhr.onerror = addError;
 
   /**
    * show error message when data not loaded
@@ -223,6 +217,7 @@ function getReviews() {
 
 getReviews();
 
+document.getElementById(activeFilter).setAttribute('checked', '');
 filterBlock.classList.remove('invisible');
 
 /**
