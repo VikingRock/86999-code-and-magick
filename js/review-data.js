@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * creates a ReviewData object and adds methods to get and set its props
+ * @constructor
+ * @param {Object} dataObj
+ */
 var ReviewData = function(dataObj) {
   this._data = dataObj;
   this._data.reviewed = 'n/a';
@@ -18,7 +23,7 @@ ReviewData.prototype.getReviewUsefulness = function() {
 };
 
 ReviewData.prototype.setReviewUsefulness = function(usefulness) {
-  this._data.review_usefulness = usefulness;
+  this._data.review_usefulness += usefulness;
 };
 
 ReviewData.prototype.getReviewDescription = function() {

@@ -3,7 +3,7 @@
 /**
  * creates a Review object and renders it to the page
  * @constructor
- * @param {Object} data
+ * @param {ReviewData} data
  */
 function Review(data) {
   this._data = data;
@@ -32,7 +32,7 @@ Review.prototype.setUsefulness = function(flag) {
     if (this._data.getReviewed() === 'yes') {
       return;
     }
-    this._data.setReviewUsefulness(this._data.getReviewUsefulness + delta);
+    this._data.setReviewUsefulness(delta);
     yes.classList.add('review-quiz-answer-active');
     no.classList.remove('review-quiz-answer-active');
     this._data.setReviewed('yes');
@@ -41,7 +41,7 @@ Review.prototype.setUsefulness = function(flag) {
     if (this._data.getReviewed() === 'no') {
       return;
     }
-    this._data.setReviewUsefulness(this._data.getReviewUsefulness - delta);
+    this._data.setReviewUsefulness(-delta);
     no.classList.add('review-quiz-answer-active');
     yes.classList.remove('review-quiz-answer-active');
     this._data.setReviewed('no');
